@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  app:
+    build: .
+    container_name: tenis_master_app
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - SESSION_SECRET=${SESSION_SECRET}
