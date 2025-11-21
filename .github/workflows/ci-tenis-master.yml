@@ -1,26 +1,16 @@
-name: CI Tenis Master
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-jobs:
-  build-and-test:
+  docker-build:
+    needs: build-and-test
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout del código
         uses: actions/checkout@v4
 
-      - name: Usar Node.js 18
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
+      - name: Login en Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USER }}" --password-stdin
 
-      - name: Instalar dependencias
-        run: npm install
+      - name: Build de la imagen
+        run: docker build -t ${{ secrets.DOCKERHUB_USER }}/tenis-master .
 
-      - name: Ejecutar tests
-        run: npm test
+      - name: Push de la imagen
+        run: docker push ${{ secrets.DOCKERHUB_USER }}/tenis-master
